@@ -54,7 +54,7 @@ export default function ListPage ()  {
         <div className={`mb-[60px]`}>
             {playlists.length > 0 ? (
                 playlists.map((playlist, index) => (
-                    <Link href={`/lists`} key={index} className={`p-2 flex items-center justify-between mb-2 hover:bg-neutral-900`}>
+                    <Link href={`/listsongs?list_id=${playlist.id}`} key={index} className={`p-2 flex items-center justify-between mb-2 hover:bg-neutral-900`}>
                         <div className="flex items-center gap-4 ">
                             <img
                                 src={playlist.thumbnail_url}

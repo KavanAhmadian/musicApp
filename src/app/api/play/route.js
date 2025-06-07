@@ -12,7 +12,7 @@ export async function GET(req) {
     }
 
     const externalUrl = `https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=link_play&btn=Now&video_id=${video_id}&list=${list}`;
-    console.log(externalUrl);
+
     try {
         const res = await fetch(externalUrl);
         const contentType = res.headers.get("content-type");

@@ -45,7 +45,7 @@ const UserSlider = ({ title, users ,   fatherID }) => {
                     {users.map((user, index) => (
                         <SwiperSlide key={index}>
                             <Link
-                                href={`/src/app/(music)/playlist/${user.id}`}
+                                href={`/listsongs?list_id=${user.id}`}
                                 className="flex flex-col items-center justify-center group relative gap-2 min-h-[140px]"
                             >
                                 <Image
