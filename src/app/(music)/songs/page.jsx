@@ -26,7 +26,13 @@ function PlayListPage() {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ what_list: type }),
+                    body: JSON.stringify({
+                        what_list: type,
+                        key: 'sdifu4530dsf98sf0sdf',
+                        action: 'list_music',
+                        pageno : '1'
+
+                    }),
                 });
 
                 const json = await res.json();

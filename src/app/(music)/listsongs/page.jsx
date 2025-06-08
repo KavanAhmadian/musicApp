@@ -57,6 +57,40 @@ function Page(props) {
     }, []);
 
     useEffect(() => {
+        if (currentTrack) {
+            const fetchAudioUrl = async () => {
+                try {
+                    const res = await fetch(`/api/play?video_id=${currentTrack.id}&list=${type}`);
+                    const contentType = res.headers.get("content-type");
+
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! Status: ${res.status}`);
+                    }
+
+                    if (contentType && contentType.includes("application/json")) {
+                        const data = await res.json();
+                        if (data.url) {
+                            setAudioUrl(data.url);
+                        } else {
+                            console.warn("⚠️ لینک یافت نشد در JSON.");
+                            setAudioUrl(null);
+                        }
+                    } else {
+                        const text = await res.text();
+                        console.warn("⚠️ پاسخ JSON نبود. پاسخ سرور:\n", text.slice(0, 300));
+                        throw new Error("پاسخ معتبر JSON نبود.");
+                    }
+                } catch (err) {
+                    console.error("⛔ خطا در دریافت لینک پخش:", err.message);
+                    setAudioUrl(null);
+                }
+            };
+
+            fetchAudioUrl();
+        }
+    }, [currentTrack, type]);
+
+    useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
 
@@ -117,7 +151,7 @@ function Page(props) {
                                 <Image src={music.thumbnail_url || '/image/default.jpg'}
                                        className="rounded-xl object-cover cursor-pointer"
                                        alt={music.title || 'music'}
-                                       height={80} width={80}/>
+                                       height={80} width={80} sizes="80px" style={{ height: '80px'  , width: '80px' }} />
                                 <div className="flex flex-col">
                                     <h3 className="text-[20px] text-white cursor-pointer">{music.title || 'بدون عنوان'}</h3>
                                     <h6 className="text-[14px] text-[#6e6e6e]">{music.fard_name || 'نامشخص'}</h6>
