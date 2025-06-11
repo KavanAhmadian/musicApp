@@ -2,6 +2,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useSearchParams} from "next/navigation";
 import Loader from "@/component/Loader";
+import { Icon } from "@iconify/react";
 import Image from "next/image";
 import {MdOutlineFileDownload, MdOutlineRemoveRedEye} from "react-icons/md";
 import Link from "next/link";
@@ -15,7 +16,7 @@ function Page(props) {
     const [musicList, setMusicList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-
+    const [duration, setDuration] = useState(0);
     const [type, setType] = useState("last_music");
     const [currentTrack, setCurrentTrack] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -103,6 +104,10 @@ function Page(props) {
             });
         };
 
+        audio.addEventListener('loadedmetadata', () => {
+            setDuration(audio.duration);
+        });
+
         const updateProgress = () => {
             setProgress(audio.currentTime);
         };
@@ -145,7 +150,9 @@ function Page(props) {
                 ) : (
                     musicList.map((music, index) => (
                         <div key={index}
-                             className="flex items-center justify-between bg-[#212121] py-1 w-full cursor-pointer hover:bg-[#2a2a2a] transition"
+                             className={`flex items-center justify-between rounded-2xl
+         ${index % 2 === 0 ? 'bg-gradient-to-r from-[#2E2E2E] to-[#151515]' : 'bg-gradient-to-r from-[#151515] to-[#2E2E2E]'} 
+         py-1 w-full cursor-pointer hover:bg-[#2a2a2a] transition`}
                              onClick={() => handleTrackClick(music)}>
                             <div className="flex items-center gap-2">
                                 <Image src={music.thumbnail_url || '/image/default.jpg'}
@@ -169,7 +176,7 @@ function Page(props) {
             </div>
 
             {currentTrack && audioUrl && (
-                <div className="fixed bottom-[80px] left-0 right-0 bg-[#1a1a1a] text-white px-4 py-2 flex flex-col items-center z-50 shadow-lg border-t border-gray-800">
+                <div className="fixed bottom-[78px] z-[9910] duration-150 transition-all lg:bottom-0  left-0 right-0  bg-linear-to-r to-[#4e4e4e] from-[#323230] bg-[#1a1a1a] text-white px-4 py-2 flex flex-col items-center shadow-lg border-t border-gray-800">
                     <div className="w-full flex justify-between items-center">
                         <div className="flex items-center gap-3">
                             <Image
@@ -186,7 +193,14 @@ function Page(props) {
                         </div>
 
                         <div className="flex items-center gap-4">
-                            <button onClick={handlePrevTrack}>⏮️</button>
+                            <button onClick={handleNextTrack}>
+
+                                <Icon
+                                    icon={`solar:skip-next-outline`}
+                                    className={`transition-colors duration-300 text-[#7F7F7F]`}
+                                    style={{width: "32px", height: "32px"}}
+                                />
+                            </button>
                             <button onClick={() => {
                                 if (audioRef.current.paused) {
                                     audioRef.current.play();
@@ -196,27 +210,44 @@ function Page(props) {
                                     setIsPlaying(false);
                                 }
                             }}>
-                                {isPlaying ? '⏸️' : '▶️'}
+                                <div className="p-4 bg-[#FF9766] hover:bg-[#FF6855] rounded-full transition-all">
+                                    <Icon
+                                        icon={isPlaying ? `solar:pause-outline` : `solar:play-linear`}
+                                        className="text-white"
+                                        style={{ fontSize: 24 }}
+                                    />
+                                </div>
                             </button>
-                            <button onClick={handleNextTrack}>⏭️</button>
+                            <button onClick={handlePrevTrack}>
+
+                                <Icon
+                                    icon={`solar:skip-previous-outline`}
+                                    className={`transition-colors duration-300 text-[#7F7F7F]`}
+                                    style={{width: "32px", height: "32px"}}
+                                />
+                            </button>
                             <button onClick={() => {
                                 audioRef.current.pause();
                                 audioRef.current.currentTime = 0;
                                 setCurrentTrack(null);
                                 setAudioUrl(null);
                                 setIsPlaying(false);
-                            }}>❌</button>
+                            }}> <Icon
+                                icon={`solar:close-circle-outline`}
+                                className={`transition-colors duration-300 text-[#7F7F7F]`}
+                                style={{width: "32px", height: "32px"}}
+                            /></button>
                         </div>
                     </div>
                     <div className="w-full mt-2">
                         <input
                             type="range"
                             value={progress}
-                            max={audioRef.current?.duration || 0}
+                            max={duration || 0}
                             onChange={(e) => {
                                 audioRef.current.currentTime = e.target.value;
                             }}
-                            className="w-full"
+                            className="w-full accent-[#FF9766]"
                         />
                     </div>
                     <audio

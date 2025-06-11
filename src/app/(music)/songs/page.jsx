@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Link from "next/link";
 import { LuMusic4 } from "react-icons/lu";
+import { Icon } from "@iconify/react";
 import { IoFlameOutline } from "react-icons/io5";
 import { MdOutlineRemoveRedEye, MdOutlineFileDownload } from "react-icons/md";
 import { RiPlayReverseLargeLine } from "react-icons/ri";
@@ -17,6 +18,7 @@ function PlayListPage() {
     const [audioUrl, setAudioUrl] = useState(null);
     const [progress, setProgress] = useState(0);
     const audioRef = useRef(null);
+    const [duration, setDuration] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -95,6 +97,10 @@ function PlayListPage() {
             });
         };
 
+        audio.addEventListener('loadedmetadata', () => {
+            setDuration(audio.duration);
+        });
+
         const updateProgress = () => {
             setProgress(audio.currentTime);
         };
@@ -152,8 +158,11 @@ function PlayListPage() {
                 ) : (
                     musicList.map((music, index) => (
                         <div key={index}
-                             className="flex items-center justify-between bg-[#212121] py-1 w-full cursor-pointer hover:bg-[#2a2a2a] transition"
+                             className={`flex items-center justify-between rounded-2xl
+         ${index % 2 === 0 ? 'bg-gradient-to-r from-[#2E2E2E] to-[#151515]' : 'bg-gradient-to-r from-[#151515] to-[#2E2E2E]'} 
+         py-1 w-full cursor-pointer hover:bg-[#2a2a2a] transition`}
                              onClick={() => handleTrackClick(music)}>
+
                             <div className="flex items-center gap-2">
                                 <Image src={music.thumbnail_url || '/image/default.jpg'}
                                        className="rounded-xl object-cover cursor-pointer"
@@ -164,6 +173,7 @@ function PlayListPage() {
                                     <h6 className="text-[14px] text-[#6e6e6e]">{music.fard_name || 'نامشخص'}</h6>
                                 </div>
                             </div>
+
                             <div className="flex items-center gap-3 mx-4">
                                 <MdOutlineFileDownload className="text-white text-2xl cursor-pointer"/>
                                 <Link href={`/music/${music.id}`}>
@@ -172,11 +182,14 @@ function PlayListPage() {
                             </div>
                         </div>
                     ))
+
                 )}
             </div>
 
             {currentTrack && audioUrl && (
-                <div className="fixed bottom-[80px] left-0 right-0 bg-[#1a1a1a] text-white px-4 py-2 flex flex-col items-center z-50 shadow-lg border-t border-gray-800">
+
+                <div className="fixed bottom-[78px] z-[9910] duration-150 transition-all lg:bottom-0 left-0 right-0 bg-linear-to-r to-[#4e4e4e] from-[#323230] bg-[#1a1a1a] text-white px-4 py-2 flex flex-col items-center  shadow-lg border-t border-gray-800">
+
                     <div className="w-full flex justify-between items-center">
                         <div className="flex items-center gap-3">
                             <Image
@@ -193,7 +206,17 @@ function PlayListPage() {
                         </div>
 
                         <div className="flex items-center gap-4">
-                            <button onClick={handlePrevTrack}>⏮️</button>
+
+                            <button onClick={handleNextTrack}>
+
+                                <Icon
+                                    icon={`solar:skip-next-outline`}
+                                    className={`transition-colors duration-300 text-[#7F7F7F]`}
+                                    style={{width: "32px", height: "32px"}}
+                                />
+                            </button>
+
+
                             <button onClick={() => {
                                 if (audioRef.current.paused) {
                                     audioRef.current.play();
@@ -203,28 +226,51 @@ function PlayListPage() {
                                     setIsPlaying(false);
                                 }
                             }}>
-                                {isPlaying ? '⏸️' : '▶️'}
+                                <div className="p-4 bg-[#FF9766] hover:bg-[#FF6855] rounded-full transition-all">
+                                    <Icon
+                                        icon={isPlaying ? `solar:pause-outline` : `solar:play-linear`}
+                                        className="text-white"
+                                        style={{ fontSize: 24 }}
+                                    />
+                                </div>
                             </button>
-                            <button onClick={handleNextTrack}>⏭️</button>
+
+                            <button onClick={handlePrevTrack}>
+
+                                <Icon
+                                    icon={`solar:skip-previous-outline`}
+                                    className={`transition-colors duration-300 text-[#7F7F7F]`}
+                                    style={{width: "32px", height: "32px"}}
+                                />
+                            </button>
                             <button onClick={() => {
                                 audioRef.current.pause();
                                 audioRef.current.currentTime = 0;
                                 setCurrentTrack(null);
                                 setAudioUrl(null);
                                 setIsPlaying(false);
-                            }}>❌</button>
+                            }}>
+                                <Icon
+                                    icon={`solar:close-circle-outline`}
+                                    className={`transition-colors duration-300 text-[#7F7F7F]`}
+                                    style={{width: "32px", height: "32px"}}
+                                />
+
+                            </button>
                         </div>
                     </div>
                     <div className="w-full mt-2">
-                        <input
-                            type="range"
-                            value={progress}
-                            max={audioRef.current?.duration || 0}
-                            onChange={(e) => {
-                                audioRef.current.currentTime = e.target.value;
-                            }}
-                            className="w-full"
-                        />
+                        <div className="w-full mt-2">
+                            <input
+                                type="range"
+                                value={progress}
+                                max={duration || 0}
+                                onChange={(e) => {
+                                    audioRef.current.currentTime = e.target.value;
+                                }}
+                                className="w-full accent-[#FF9766]"
+                            />
+                        </div>
                     </div>
                     <audio
                         ref={audioRef}
