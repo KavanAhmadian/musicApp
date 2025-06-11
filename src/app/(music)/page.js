@@ -41,7 +41,7 @@ export default function Home() {
                             {section.list.map((user, i) => (
                                 <SwiperSlide key={i}>
                                     <Link
-                                        href="/"
+                                        href={`/signer?id=${user.id}`}
                                         className="flex flex-col items-center justify-center gap-2 min-h-[140px] w-[110px]"
                                     >
                                         <Image
@@ -57,8 +57,8 @@ export default function Home() {
                                             className="text-white text-sm text-center truncate w-full block"
                                             title={user.title || "بدون عنوان"}
                                         >
-      {user.title || "بدون عنوان"}
-    </span>
+                                          {user.title || "بدون عنوان"}
+                                        </span>
                                     </Link>
                                 </SwiperSlide>
 

@@ -1,18 +1,17 @@
 'use client'
 import React, {useEffect, useRef, useState} from 'react';
-import {useSearchParams} from "next/navigation";
-import Loader from "@/component/Loader";
+import {useSearchParams, useRouter} from "next/navigation";
 import Image from "next/image";
+import { Icon } from "@iconify/react";
 import {MdOutlineFileDownload, MdOutlineRemoveRedEye} from "react-icons/md";
 import Link from "next/link";
 import {RiPlayReverseLargeLine} from "react-icons/ri";
 import {LuMusic4} from "react-icons/lu";
 import {IoFlameOutline} from "react-icons/io5";
+import Loader from "@/component/Loader";
 
-
-function Page(props) {
-
-    const [musicList, setMusicList] = useState([]);
+export default function SignerPage() {
+    const [songs, setSongs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
 
@@ -23,38 +22,36 @@ function Page(props) {
     const [progress, setProgress] = useState(0);
     const audioRef = useRef(null);
 
-    const searchParams = useSearchParams()
-    const listId = searchParams.get('list_id')
+
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const signerId = searchParams.get('id');
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-
-                const response = await fetch('/api/listsongs', {
+                const response = await fetch('/api/signer', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         key: 'sdifu4530dsf98sf0sdf',
                         action: 'list_music',
-                        listId: listId,
-                        what_list: 'play_list',
+                        singer_id: signerId,
+                        what_list: 'last_music',
                         pageno: '1',
                     }),
                 });
                 const data = await response.json();
-                setMusicList(data.all);
-                setLoading(false);
+                setSongs(data.all || []);
             } catch (error) {
                 setError(true);
-                setLoading(false);
             } finally {
                 setLoading(false);
             }
         };
         fetchData();
-    }, []);
+    }, [signerId]);
+
 
     useEffect(() => {
         if (currentTrack) {
@@ -90,6 +87,7 @@ function Page(props) {
         }
     }, [currentTrack, type]);
 
+
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
@@ -116,7 +114,8 @@ function Page(props) {
         };
     }, [audioUrl]);
 
-    const handleTrackClick = (music) => {
+
+      const handleTrackClick = (music) => {
         setCurrentTrack(music);
         setIsPlaying(true);
     };
@@ -137,13 +136,33 @@ function Page(props) {
         }
     };
 
+    if (loading) {
+        return (
+            <div className="text-center text-white py-10">در حال بارگذاری...</div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="text-center text-red-500 py-10">خطا در بارگذاری آهنگ‌ها</div>
+        );
+    }
+
+    if (!songs.length) {
+        return (
+            <div className="text-center text-gray-400 py-10">آهنگی برای این خواننده یافت نشد</div>
+        );
+    }
+
     return (
-        <div>
-            <div className="flex items-center justify-center flex-col gap-3 mb-16">
+        <div className={`mb-16`}>
+
+
+            <div className="flex items-center justify-center flex-col gap-3">
                 {loading ? (
                     <Loader/>
                 ) : (
-                    musicList.map((music, index) => (
+                    songs.map((music, index) => (
                         <div key={index}
                              className="flex items-center justify-between bg-[#212121] py-1 w-full cursor-pointer hover:bg-[#2a2a2a] transition"
                              onClick={() => handleTrackClick(music)}>
@@ -151,15 +170,15 @@ function Page(props) {
                                 <Image src={music.thumbnail_url || '/image/default.jpg'}
                                        className="rounded-xl object-cover cursor-pointer"
                                        alt={music.title || 'music'}
-                                       height={80} width={80} sizes="80px" style={{ height: '80px'  , width: '80px' }} />
+                                       height={80} width={80}/>
                                 <div className="flex flex-col">
-                                    <h3 className="text-[17px] text-white cursor-pointer">{music.title || 'بدون عنوان'}</h3>
-                                    <h6 className="text-[12px] text-[#6e6e6e]">{music.fard_name || 'نامشخص'}</h6>
+                                    <h3 className="text-[20px] text-white cursor-pointer">{music.title || 'بدون عنوان'}</h3>
+                                    <h6 className="text-[14px] text-[#6e6e6e]">{music.fard_name || 'نامشخص'}</h6>
                                 </div>
                             </div>
                             <div className="flex items-center gap-3 mx-4">
                                 <MdOutlineFileDownload className="text-white text-2xl cursor-pointer"/>
-                                <Link href={`/singlemusic?video_id=${music.id}`}>
+                                <Link href={`/music/${music.id}`}>
                                     <RiPlayReverseLargeLine className="text-white text-2xl cursor-pointer"/>
                                 </Link>
                             </div>
@@ -230,5 +249,3 @@ function Page(props) {
         </div>
     );
 }
-
-export default Page;
