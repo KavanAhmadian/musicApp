@@ -14,10 +14,10 @@ function Navigation() {
         href: "/playlist", label: "پلی لیست", icon: 'solar:playlist-minimalistic-3-linear',
     }, {href: "/", label: "ویترین", icon: 'solar:widget-linear'}, {
         href: "/songs", label: "آهنگ ها", icon: 'solar:music-note-slider-linear',
-    }, {href: "/register", label: "بیت باکس من", icon: 'solar:playlist-minimalistic-3-linear'},];
+    }, {href: "/my-beatbox", label: "بیت باکس من", icon: 'solar:playlist-minimalistic-3-linear'},];
 
     return (<div
-        className="bg-[#212121] z-[999] p-3 fixed bottom-0 w-full lg:static lg:w-32 lg:h-screen lg:flex lg:flex-col lg:items-center lg:justify-center">
+        className="bg-[#212121] z-[89] p-3 fixed bottom-0 w-full lg:static lg:w-32 lg:h-screen lg:flex lg:flex-col lg:items-center lg:justify-center">
         <div className="flex justify-around gap-2 mx-auto sm:w-full md:w-full lg:flex-col lg:gap-10">
 
             {links.map((link, index) => {

@@ -1,9 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Icon } from "@iconify/react";
+import {useRouter} from "next/navigation";
+
+
 
 const sidebarLinks = [
     { href: "/", iconn: 'solar:moon-linear', label: "حالت شب غیرفعال شود" },
@@ -19,12 +22,32 @@ const sidebarLinks = [
 export default function TopNav() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+    const router = useRouter();
+    const [user, setUser] = useState({ name: '', phone: '', vote: 0 });
+    useEffect(() => {
+        const storedUser = localStorage.getItem('userInfo');
+
+        // شرط کاملاً امن:
+        if (storedUser && storedUser !== 'undefined') {
+            try {
+                setUser(JSON.parse(storedUser));
+            } catch (e) {
+                console.error("Failed to parse user info", e);
+                router.push('/login');
+            }
+        } else {
+            console.warn("No valid user info found, redirecting to login...");
+            router.push('/login');
+        }
+    }, []);
+
+
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
     return (
         <>
             {/* Top Navigation (Fixed) */}
-            <div className="fixed z-[999] top-0 left-0 right-0  bg-[#212121] flex items-center justify-between p-4 shadow-md">
+            <div className="fixed z-[99] top-0 left-0 right-0  bg-[#212121] flex items-center justify-between p-4 shadow-md">
                 <button onClick={toggleSidebar}>
                     <Icon icon="solar:hamburger-menu-outline" className="w-8 h-8 text-white cursor-pointer" />
                 </button>
@@ -36,7 +59,7 @@ export default function TopNav() {
             </div>
 
             {/* Sidebar */}
-            <div className={`fixed top-0 right-0 h-full w-72 bg-[#212121] text-white transform transition-transform duration-300 z-50 ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}`}>
+            <div className={`fixed z-[102] top-0 right-0 h-full w-72 bg-[#212121] text-white transform transition-transform duration-300  ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}`}>
                 <div className="flex items-center justify-between p-4 border-b border-[#2e2e2e]">
                     <div className="flex items-center gap-2">
                         <Image src="/image/logo.png" alt="بیت باکس" width={60} height={60} />
@@ -48,11 +71,11 @@ export default function TopNav() {
                 </div>
 
                 <div className="flex flex-col items-start gap-2 p-4 border-b border-[#2e2e2e]">
-                    <Link href={`/my-beatbox`} className="font-normal">هادی محمدی</Link>
-                    <span className="font-normal text-gray-500">09198224892</span>
+                    <Link href={`/my-beatbox`} className="font-normal">{user.name}</Link>
+                    <span className="font-normal text-gray-500">{user.phone}</span>
                     <div className="flex items-center gap-1">
                         <p className="font-normal">تعداد امتیاز :</p>
-                        <span className="font-normal text-[#FFEB3B]">33</span>
+                        <span className="font-normal text-[#FFEB3B]">{user.vote}</span>
                     </div>
                 </div>
 

@@ -11,6 +11,10 @@
   "dependencies": {
     "@solar-icons/react": "^1.0.1",
     "@svgr/webpack": "^8.1.0",
+    "cookie": "^1.0.2",
+    "form-data": "^4.0.3",
+    "form-data-encoder": "^4.1.0",
+    "formdata-node": "^6.0.3",
     "next": "15.3.1",
     "nextjs-progressbar": "^0.0.16",
     "react": "^19.0.0",

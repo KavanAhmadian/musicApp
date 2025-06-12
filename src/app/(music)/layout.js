@@ -3,6 +3,7 @@ import "../globals.css";
 import Navigation from "@/component/navigation";
 import TopNav from "@/component/TopNav";
 import Container from "@/component/Container";
+import AuthLoader from "@/component/AuthLoader";
 
 const iransans = localFont({
   src: [
@@ -54,6 +55,7 @@ export default function MusicLayout({ children }) {
         <div className="flex-1 overflow-auto">
           <Container className="mt-2 pb-10">
             <TopNav />
+            {/*<AuthLoader />*/}
             {children}
           </Container >
         </div>
