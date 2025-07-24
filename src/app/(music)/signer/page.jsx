@@ -164,7 +164,16 @@ export default function SignerPage() {
     return (
         <div className={`mb-16`}>
 
-
+            <div className="w-full flex items-center justify-around bg-neutral-800 rounded-xl mb-4 p-2">
+              <button className={`flex items-center justify-center gap-1.5`}>
+                  <Icon icon="solar:music-note-3-outline" className="w-6 h-6 text-white cursor-pointer" />
+                  آهنگ ها
+              </button>
+                <button className={`flex items-center justify-center gap-1.5`}>
+                    <Icon icon="solar:music-library-linear" className="w-6 h-6 text-white cursor-pointer" />
+                     آلبوم ها
+                </button>
+            </div>
             <div className="flex items-center justify-center flex-col gap-3">
                 {loading ? (
                     <Loader/>

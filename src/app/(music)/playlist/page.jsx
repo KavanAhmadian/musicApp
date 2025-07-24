@@ -53,7 +53,7 @@ const UserSlider = ({ title, users ,   fatherID }) => {
                                     alt={user.name}
                                     width={166}
                                     height={166}
-                                    className="rounded-xl w-full object-cover"
+                                    className="rounded-xl w-full "
                                     loading="lazy"
                                 />
                                 <span className="text-white flex items-center justify-center w-full h-full text-sm absolute top-0 right-0 left-0 bg-black/30">

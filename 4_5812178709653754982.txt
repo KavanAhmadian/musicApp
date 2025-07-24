@@ -1,0 +1,219 @@
+-------------------------------------------------- لیست پلی لیست ها
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=play_list_vitrin
+
+--------------------------------------------------	ویتری روی دکمه بیشتر کلیک شد نمایش لیست پلی لیست ها
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=search_playlist&pageno=1
+
+مقادیر زیر باید Post شود
+'father' => '22',		این شماره مقدار father_id دریافت شده از لیست بالایی است
+'what_list' => 'play_list'
+
+
+--------------------------------------------------	حالا روی هر پلی لیست کلیک شد نمایش لیست آهنگ هایش
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=list_music&pageno=1
+
+مقادیر زیر باید Post شود
+
+'list_id' => '591',		این آیدی از لیست بالایی دریافت می شود شماره id هر پلی لیست است
+'what_list' => 'play_list'
+
+
+------------------------------------------------ ویترین
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=vitrin&pageno=1
+
+مقدار pageno شماره صفحه هست
+
+
+
+
+-------------------------------------------------- لیست موزیک ها
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=list_music&pageno=1
+
+مقادیر زیر باید Post شود
+
+برای اخرین موزیک ها
+what_list = last_music
+
+برای لیست داغ ها
+what_list = list_hot
+
+برای لیست پربازدید ها
+what_list = list_view
+
+
+--------------------------------------------	لیست موزیک ویدیو ها
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=list_music_video&pageno=1%27
+
+----------------------------------------------	جستجو آهنگ
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=list_music&pageno=1
+
+مقادیر زیر باید Post شود
+
+'what_list' => 'last_music',
+'search_quary' => 'عشق',
+
+-----------------------------------------------	جستجوی خوانندگان
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=search_singer&pageno=1
+
+مقادیر زیر باید Post شود
+search_quary = علی		<= مقداری که از کادر جستجو دریافت کرده است
+
+
+
+--------------------------------------------	جستجو آلبوم
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=search_playlist&pageno=1
+
+مقادیر زیر باید Post شود
+'what_list' => 'Album',
+'search_quary' => 'عشقولانه'
+
+
+
+--------------------------------------------	جستجو پلی لیست
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=search_playlist&pageno=1
+
+مقادیر زیر باید Post شود
+'what_list' => 'play_list',
+'search_quary' => 'رازگشا'
+
+
+------------------------------------------	جستجو موزیک ویدیو
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=list_music_video&pageno=1
+
+مقادیر زیر باید Post شود
+'what_list' => 'play_list',
+'search_quary' => 'مسیح',
+
+-----------------------------------------	ورود به حساب کاربری
+
+https://rubibox.ir/app-plus/api-test-users.php?key=sdifu4530dsf98sf0sdf&action=login
+
+مقادیر زیر باید Post شود
+'pass' => 'zaq123'
+'user_name' => '09100482271'
+
+------------------------------------------------	ثبت نام کاربر
+
+https://rubibox.ir/app-plus/api-test-users.php?key=sdifu4530dsf98sf0sdf&action=new
+
+مقادیر زیر باید Post شود
+'name' => 'ali',
+'user_name' => '09100482271',
+'pass' => '123456',
+'refed_by' => ''		اگر کد دعوت دارد وارد کند
+
+در مرحله بعد کادری باز شود تا کد 4 رقمی ارسال شده به موبایل کاربر وارد شود
+و پس از دریافت ورودی از کاربر به ادرس زیر ارسال شود
+
+https://rubibox.ir/app-plus/api-test-users.php?key=sdifu4530dsf98sf0sdf&action=enable
+مقادیر زیر باید Post شود
+'encode' => '3185'
+'user_name' => '09100482271'
+
+نتیجه مقدار msg در کادری به کاربر نمایش داده شود
+
+
+
+
+
+-----------------------------------------	 فراموشی رمز ورود
+https://rubibox.ir/app-plus/api-test-users.php?key=sdifu4530dsf98sf0sdf&action=change_pass
+
+مقادیر زیر باید Post شود
+'step' => '1',
+'user_name' => '09100482271',
+
+نتیجه اگر T بود به مرحله 2 چهت دریافت کد 4 رقمی ارسال شده به کاربر شود
+
+در مرحله بعد کد 4 رقمی را از کاربر دریافت کند و به ادرس زیر ارسال کند
+
+https://rubibox.ir/app-plus/api-test-users.php?key=sdifu4530dsf98sf0sdf&action=change_pass
+
+مقادیر زیر باید Post شود
+'step' => '2',
+'user_name' => '09100482271',
+'code_forget' => '1234'			کد دریافت شده
+
+اگر جواب T بود مرحله بعدی می رود
+و مقدار پسورد جدید را از کاربر گرفته و به ادرس زیر ارسال شود
+در غیر این صورت پیام دریافت شده نمایش داده شود
+
+https://rubibox.ir/app-plus/api-test-users.php?key=sdifu4530dsf98sf0sdf&action=change_pass
+
+مقادیر زیر باید Post شود
+'step' => '3',
+'user_name' => '09100482271',
+'new_pass' => '654321'
+
+اگر مقدار دریافت شده T بود رمز با موفقیت تغییر کرده
+در غیر این صورت پیام دریافت شده نمایش داده شود
+
+
+------------------------------------------------------  نمایش لیست آهنگ های یک خواننده
+
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=list_music&pageno=1
+
+مقادیر زیر باید Post شود
+'singer_id' => '3',
+'what_list' => 'last_music',
+
+------------------------------------------------------ لیست ژانر ها
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=list_genre
+
+
+
+------------------------------------------------------	نمایش موزیک های هر ژانر
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=list_music&pageno=1
+
+مقادیر زیر باید Post شود
+'genre' => '1',
+'what_list' => 'last_music',
+
+------------------------------------------------------	دریافت اطلاعات موزیک و پخش ان
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=link_play
+
+'btn' => 'Now',			// برای رفتن به موزیک بعدی این مقدار می شود Next و برای رفتن به موزیک قبلی این مقدار می شود Prev
+'video_id' => '10900',		// شماره آهنگ ها که از لیست های موزیک دریافت می شود
+'list' => 'last_music'		// مقدار این بستگی به لیستی دارد که قصد پخش موزیک از آن را داریم 
+'list_id' => '',
+'singer_id' => '',
+'now_page' => '',
+'sort' => '',
+'genre' => '',
+'country' => '',
+'play_quality' => '',
+'sort_play' => '',
+
+
+توضیحات list
+مثلا آهنگ از لیست آخرین موزیک ها میخواهد پخش شود یا از لیست پلی لیست ها یا از لیست ژانر انتخاب شده یا از لیست یک آلبوم جهت پخش ارسال می شود 
+
+اگر از لیست جدید ها پخش شد
+'list' => 'last_music'
+
+اگر از لیست داغ ها پخش شد
+'list' => 'list_hot'
+
+اگر از لیست پربازدید ها پخش شد
+'list' => 'list_view'
+
+اگر از لیست پلی لیست ها پخش شد
+'list' => 'play_list'
+'list_id' => '3'		و شماره لیست هم ارسال شود
+
+اگر در پلی لیست کاربر ترتیب مرتب سازی لیست را هم تغییر دهد
+'sort' => 'old_of_list'		--- view_of_list پربازدید ترین  --- old_of_list قدیمی ترین اضافه شده --- like_of_list محبوب ترین اضافه شده  	-- new_of_list جدیدترین اضافه شده
+
+
+
+توضیحات مقدار now_page
+هر لیست به صورت موزیک 70 موزیک دارد وقتی به انتهای لیست میرسیم باید صفحه بعدی لود شود که این مقدار مشخص میکند موزیک پخش شده از صفحه چند بوده
+
+
+
+--------------------------------------------	خرید اشتراک
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=acc_list
+
+
+
+

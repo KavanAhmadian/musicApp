@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState, useRef } from 'react';
 import Link from "next/link";
-import { useRouter } from 'next/navigation';
+import {useRouter, useSearchParams} from 'next/navigation';
 import { LuMusic4 } from "react-icons/lu";
 import { Icon } from "@iconify/react";
 import { IoFlameOutline } from "react-icons/io5";
@@ -21,34 +21,39 @@ function PlayListPage() {
     const audioRef = useRef(null);
     const [duration, setDuration] = useState(0);
 
+    const searchParams = useSearchParams();
+    const genreId = searchParams.get("ganre_id");
 
     const router = useRouter();
 
     // fetch list
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await fetch('/api/music', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        what_list: type,
-                        key: 'sdifu4530dsf98sf0sdf',
-                        action: 'list_music',
-                        pageno: '1'
-                    }),
+        if (genreId) {
+            setLoading(true);
+            // ارسال درخواست POST برای دریافت موزیک‌ها
+            fetch("/api/musicByGenre", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    genre: genreId,
+                    what_list: "last_music",
+                    pageno: "1",
+                }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    setMusicList(data.all || []);
+
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    setError(true);
+                    setLoading(false);
                 });
-                const json = await res.json();
-                setMusicList(json.all || []);
-                setLoading(false);
-            } catch (err) {
-                console.error("❌ خطا در دریافت:", err.message);
-                setMusicList([]);
-                setLoading(false);
-            }
-        };
-        fetchData();
-    }, [type]);
+        }
+    }, [genreId]);
 
     // fetch audio url
     useEffect(() => {
@@ -127,18 +132,7 @@ function PlayListPage() {
 
     return (
         <div>
-            {/* Filter Buttons */}
-            <div className="flex items-center justify-center gap-12 py-2 bg-[#212121] mb-4">
-                <button onClick={() => setType("last_music")} className="text-white font-light flex items-center gap-1 cursor-pointer">
-                    <LuMusic4 className="text-xl"/> جدیدها
-                </button>
-                <button onClick={() => setType("list_hot")} className="text-white font-light flex items-center gap-1 cursor-pointer">
-                    <IoFlameOutline className="text-xl"/> داغ ها
-                </button>
-                <button onClick={() => setType("list_view")} className="text-white font-light flex items-center gap-1 cursor-pointer">
-                    <MdOutlineRemoveRedEye className="text-xl"/> پربازدیدها
-                </button>
-            </div>
+
 
             {/* Music List */}
             <div className="flex items-center justify-center flex-col gap-3">

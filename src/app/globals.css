@@ -25,3 +25,22 @@ img {
   max-width: 100%!important;
   max-height: 100%!important;
 }
+
+/* Custom Scrollbar Styles */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #FF9766;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #FF6855;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: #333;
+  border-radius: 10px;
+}

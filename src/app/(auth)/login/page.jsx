@@ -66,7 +66,7 @@ export default function LoginPage() {
 
                 {error && <div className="text-red-500 text-sm">{error}</div>}
             </form>
-
+            <Link className="text-[#a5a5a5] mt-3" href="/forgot"> فراموشی رمزعبور</Link>
             <div className="flex gap-2 items-center justify-center mt-6 w-full">
                 <span className="text-[#a5a5a5]">حساب کاربری ندارید؟</span>
                 <Link className="text-[#FFEB3B]" href="/register">ثبت نام</Link>

@@ -1,12 +1,11 @@
 "use client";
 
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Icon } from "@iconify/react";
-import {useRouter} from "next/navigation";
-
-
+import GenreModal from "@/component/GanreModal";
+  // فرض بر این است که کامپوننت Modal ساخته‌اید
 
 const sidebarLinks = [
     { href: "/", iconn: 'solar:moon-linear', label: "حالت شب غیرفعال شود" },
@@ -21,45 +20,71 @@ const sidebarLinks = [
 
 export default function TopNav() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-    const router = useRouter();
     const [user, setUser] = useState({ name: '', phone: '', vote: 0 });
-    useEffect(() => {
-        const storedUser = localStorage.getItem('userInfo');
+    const [isModalOpen, setIsModalOpen] = useState(false); // State for modal
+    const [genres, setGenres] = useState([]); // State for storing genres
+    const [loading, setLoading] = useState(false); // Loading state for genres
 
-        // شرط کاملاً امن:
-        if (storedUser && storedUser !== 'undefined') {
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
             try {
-                setUser(JSON.parse(storedUser));
+                const storedUser = localStorage.getItem('userInfo');
+                if (storedUser && storedUser !== 'undefined') {
+                    setUser(JSON.parse(storedUser));
+                }
             } catch (e) {
                 console.error("Failed to parse user info", e);
-                router.push('/login');
             }
-        } else {
-            console.warn("No valid user info found, redirecting to login...");
-            router.push('/login');
         }
     }, []);
 
-
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
+    const openModal = () => {
+        setLoading(true);
+        fetch("/api/ganre")
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.error) {
+                    console.error(data.error);
+                } else {
+                    setGenres(data.all || []);  // داده‌ها را در state genres ذخیره کنید
+                }
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.error("Failed to fetch genres", error);
+                setLoading(false);
+            });
+        setIsModalOpen(true); // باز کردن مدال
+    };
+
+
+    // Open modal and fetch genres
+
 
     return (
         <>
             {/* Top Navigation (Fixed) */}
-            <div className="fixed z-[99] top-0 left-0 right-0  bg-[#212121] flex items-center justify-between p-4 shadow-md">
+            <div className="fixed z-[99] top-0 left-0 right-0 bg-[#212121] flex items-center justify-between p-4 shadow-md">
                 <button onClick={toggleSidebar}>
                     <Icon icon="solar:hamburger-menu-outline" className="w-8 h-8 text-white cursor-pointer" />
                 </button>
 
                 <div className="flex items-center gap-4">
-                    <Icon icon="solar:vinyl-linear" className="w-8 h-8 text-white cursor-pointer" />
+                    <button onClick={openModal}>
+                        <Icon icon="solar:vinyl-linear" className="w-8 h-8 text-white cursor-pointer" />
+                    </button>
                     <Icon icon="solar:magnifer-outline" className="w-8 h-8 text-white cursor-pointer" />
                 </div>
             </div>
 
             {/* Sidebar */}
-            <div className={`fixed z-[102] top-0 right-0 h-full w-72 bg-[#212121] text-white transform transition-transform duration-300  ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}`}>
+            <div
+                className={`fixed z-[102] top-0 right-0 h-full w-72 bg-[#212121] text-white transform transition-transform duration-300 ${
+                    isSidebarOpen ? "translate-x-0" : "translate-x-full"
+                }`}
+            >
                 <div className="flex items-center justify-between p-4 border-b border-[#2e2e2e]">
                     <div className="flex items-center gap-2">
                         <Image src="/image/logo.png" alt="بیت باکس" width={60} height={60} />
@@ -71,8 +96,8 @@ export default function TopNav() {
                 </div>
 
                 <div className="flex flex-col items-start gap-2 p-4 border-b border-[#2e2e2e]">
-                    <Link href={`/my-beatbox`} className="font-normal">{user.name}</Link>
-                    <span className="font-normal text-gray-500">{user.phone}</span>
+                    <Link href={`/my-beatbox`} className="font-normal">{user.name || 'کاربر مهمان'}</Link>
+                    <span className="font-normal text-gray-500">{user.phone || 'شماره ثبت نشده'}</span>
                     <div className="flex items-center gap-1">
                         <p className="font-normal">تعداد امتیاز :</p>
                         <span className="font-normal text-[#FFEB3B]">{user.vote}</span>
@@ -99,8 +124,12 @@ export default function TopNav() {
             )}
 
             {/* Spacer for Fixed TopNav */}
-            <div className="h-[72px]" /> {/* به اندازه ارتفاع نوار بالا برای جلوگیری از پوشاندن محتوا */}
+            <div className="h-[72px]" />
+
+            {/* Genre Modal */}
+            {isModalOpen && (
+                <GenreModal closeModal={() => setIsModalOpen(false)} genres={genres} loading={loading} />
+            )}
         </>
     );
 }
-

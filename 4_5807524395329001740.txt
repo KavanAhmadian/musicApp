@@ -1,0 +1,144 @@
+-------------------------------------------------- لیست پلی لیست ها
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=play_list_vitrin
+
+
+------------------------------------------------ ویترین
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=vitrin&pageno=1
+
+مقدار pageno شماره صفحه هست
+
+
+
+
+-------------------------------------------------- لیست موزیک ها
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=list_music&pageno=1
+
+مقادیر زیر باید Post شود
+
+برای اخرین موزیک ها
+what_list = last_music
+
+برای لیست داغ ها
+what_list = list_hot
+
+برای لیست پربازدید ها
+what_list = list_view
+
+
+--------------------------------------------	لیست موزیک ویدیو ها
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=list_music_video&pageno=1%27
+
+----------------------------------------------	جستجو آهنگ
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=list_music&pageno=1
+
+مقادیر زیر باید Post شود
+
+'what_list' => 'last_music',
+'search_quary' => 'عشق',
+
+-----------------------------------------------	جستجوی خوانندگان
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=search_singer&pageno=1
+
+مقادیر زیر باید Post شود
+search_quary = علی		<= مقداری که از کادر جستجو دریافت کرده است
+
+
+
+--------------------------------------------	جستجو آلبوم
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=search_playlist&pageno=1
+
+مقادیر زیر باید Post شود
+'what_list' => 'Album',
+'search_quary' => 'عشقولانه'
+
+
+
+--------------------------------------------	جستجو پلی لیست
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=search_playlist&pageno=1
+
+مقادیر زیر باید Post شود
+'what_list' => 'play_list',
+'search_quary' => 'رازگشا'
+
+
+------------------------------------------	جستجو موزیک ویدیو
+https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=list_music_video&pageno=1
+
+مقادیر زیر باید Post شود
+'what_list' => 'play_list',
+'search_quary' => 'مسیح',
+
+-----------------------------------------	ورود به حساب کاربری
+
+https://rubibox.ir/app-plus/api-test-users.php?key=sdifu4530dsf98sf0sdf&action=login
+
+مقادیر زیر باید Post شود
+'pass' => 'zaq123'
+'user_name' => '09100482271'
+
+------------------------------------------------	ثبت نام کاربر
+
+https://rubibox.ir/app-plus/api-test-users.php?key=sdifu4530dsf98sf0sdf&action=new
+
+مقادیر زیر باید Post شود
+'name' => 'ali',
+'user_name' => '09100482271',
+'pass' => '123456'
+
+در مرحله بعد کادری باز شود تا کد 4 رقمی ارسال شده به موبایل کاربر وارد شود
+و پس از دریافت ورودی از کاربر به ادرس زیر ارسال شود
+
+https://rubibox.ir/app-plus/api-test-users.php?key=sdifu4530dsf98sf0sdf&action=enable
+مقادیر زیر باید Post شود
+'encode' => '3185'
+'user_name' => '09100482271'
+
+نتیجه مقدار msg در کادری به کاربر نمایش داده شود
+
+
+
+
+
+-----------------------------------------	 فراموشی رمز ورود
+https://rubibox.ir/app-plus/api-test-users.php?key=sdifu4530dsf98sf0sdf&action=change_pass
+
+مقادیر زیر باید Post شود
+'step' => '1',
+'user_name' => '09100482271',
+
+نتیجه اگر T بود به مرحله 2 چهت دریافت کد 4 رقمی ارسال شده به کاربر شود
+
+در مرحله بعد کد 4 رقمی را از کاربر دریافت کند و به ادرس زیر ارسال کند
+
+https://rubibox.ir/app-plus/api-test-users.php?key=sdifu4530dsf98sf0sdf&action=change_pass
+
+مقادیر زیر باید Post شود
+'step' => '2',
+'user_name' => '09100482271',
+'code_forget' => '1234'			کد دریافت شده
+
+اگر جواب T بود مرحله بعدی می رود
+و مقدار پسورد جدید را از کاربر گرفته و به ادرس زیر ارسال شود
+در غیر این صورت پیام دریافت شده نمایش داده شود
+
+https://rubibox.ir/app-plus/api-test-users.php?key=sdifu4530dsf98sf0sdf&action=change_pass
+
+مقادیر زیر باید Post شود
+'step' => '3',
+'user_name' => '09100482271',
+'new_pass' => '654321'
+
+اگر مقدار دریافت شده T بود رمز با موفقیت تغییر کرده
+در غیر این صورت پیام دریافت شده نمایش داده شود
+
+
+
+
+
+
+
+
+
+
+
+

@@ -29,7 +29,7 @@ function VideoPage() {
             {videos.map((video) => (
                 <Link
                     key={video.id}
-                    href={`/src/app/(music)/video/${video.id}`}
+                    href={`/videoSingle?video_id=${video.id}`}
                     className="flex items-center justify-center flex-col overflow-hidden rounded-xl"
                 >
                     <Image
