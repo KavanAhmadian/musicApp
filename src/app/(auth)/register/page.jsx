@@ -32,15 +32,16 @@ export default function RegisterPage() {
         setError(null);
 
         try {
-            const res = await fetch('/api/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    user_name: phone,
-                    pass: pass,
-                    name: name,
-                    refed_by: refedby
-                })
+            const queryParams = new URLSearchParams({
+                user_name: phone,
+                pass: pass,
+                name: name,
+                refed_by: refedby
+            }).toString();
+
+            // تغییر به متد GET
+            const res = await fetch(`/api/register?${queryParams}`, {
+                method: 'GET',  // تغییر متد به GET
             });
 
             const data = await res.json();
@@ -58,7 +59,7 @@ export default function RegisterPage() {
 
     return (
         <div className="flex flex-col items-center justify-center w-full max-w-sm mx-auto font-[Iransans]">
-            <Logo />
+            <Logo priority={true} />
             <h2 className="text-[20px] font-semibold mb-2">به بیت باکس خوش آمدید.</h2>
             <p className="text-[15px] font-light">برای ثبت نام فیلدهای زیر را تکمیل نمایید</p>
 

@@ -1,7 +1,8 @@
-export async function POST(req) {
+// pages/api/register.js
+export async function GET(req) {
     try {
-        const body = await req.json();
-        const { name, user_name, pass, refed_by } = body;
+        const url = new URL(req.url);
+        const { name, user_name, pass, refed_by } = Object.fromEntries(url.searchParams);
 
         const formData = new FormData();
         formData.append('name', name);
@@ -12,7 +13,7 @@ export async function POST(req) {
         const response = await fetch(
             'https://rubibox.ir/app-plus/api-test-users.php?key=sdifu4530dsf98sf0sdf&action=new',
             {
-                method: 'POST',
+                method: 'POST', // هنوز از POST برای ارسال داده به سرور مقصد استفاده می‌کنیم
                 body: formData,
             }
         );

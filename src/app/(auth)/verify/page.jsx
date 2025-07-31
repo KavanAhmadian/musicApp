@@ -37,10 +37,14 @@ export default function VerifyPage() {
         setError(null);
 
         try {
-            const res = await fetch('/api/verify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user_name, encode: code })
+            // استفاده از GET به همراه پارامترها
+            const queryParams = new URLSearchParams({
+                user_name: user_name,
+                encode: code
+            }).toString();
+
+            const res = await fetch(`/api/verify?${queryParams}`, {
+                method: 'GET', // تغییر به GET
             });
 
             const data = await res.json();

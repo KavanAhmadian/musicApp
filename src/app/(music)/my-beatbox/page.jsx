@@ -51,7 +51,7 @@ export default function MyBeatBoxPage() {
                         { href: "/", icon: 'solar:playlist-minimalistic-3-linear', label: 'پلی لیست های دنبال شده', bg: 'from-[#2E5D2C] to-[#81BC3E]' },
                         { href: "/", icon: 'solar:list-check-minimalistic-bold', label: 'آلبوم های دنبال شده', bg: 'from-[#04413A] to-[#099082]' },
                         { href: "/", icon: 'solar:music-note-4-linear', label: 'خوانندگان دنبال شده', bg: 'from-[#255476] to-[#048BCD]' },
-                        { href: "/", icon: 'solar:heart-linear', label: 'آهنگ های پسند شده', bg: 'from-[#66332B] to-[#EF564A]' },
+                        { href: "/liked-songs", icon: 'solar:heart-linear', label: 'آهنگ های پسند شده', bg: 'from-[#66332B] to-[#EF564A]' },
                     ].map((item, idx) => (
                         <div key={idx} className="bg-[#454545] w-full flex gap-4 items-center justify-start">
                             <div className={`flex items-center justify-center w-16 h-16 bg-gradient-to-b ${item.bg}`}>

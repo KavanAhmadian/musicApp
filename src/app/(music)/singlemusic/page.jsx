@@ -105,6 +105,28 @@ export default function SingleMusicPage() {
         if (music?.id) fetchMusic('Prev', music.id);
     };
 
+    const handleLike = async () => {
+        if (handleAuthRequired()) {
+            try {
+                const res = await fetch('/api/liked-songs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ songId: music.id }),
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    console.log('❤️ آهنگ لایک شد!');
+                } else {
+                    console.log(data.msg);
+                }
+            } catch (err) {
+                console.error('خطا در لایک کردن آهنگ', err);
+            }
+        }
+    };
+
+
     // ✅ چک لاگین
     const handleAuthRequired = () => {
         if (typeof window !== 'undefined') {
