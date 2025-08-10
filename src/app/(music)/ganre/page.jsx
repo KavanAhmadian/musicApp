@@ -30,7 +30,7 @@ function PlayListPage() {
     useEffect(() => {
         if (genreId) {
             setLoading(true);
-            // ارسال درخواست POST برای دریافت موزیک‌ها
+
             fetch("/api/musicByGenre", {
                 method: "POST",
                 headers: {
@@ -55,7 +55,7 @@ function PlayListPage() {
         }
     }, [genreId]);
 
-    // fetch audio url
+
     useEffect(() => {
         if (currentTrack) {
             const fetchAudioUrl = async () => {
@@ -86,7 +86,7 @@ function PlayListPage() {
         }
     }, [currentTrack, type]);
 
-    // audio listeners
+
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
@@ -112,7 +112,7 @@ function PlayListPage() {
         };
     }, [audioUrl]);
 
-    // click handlers
+
     const handleTrackClick = (music) => {
         setCurrentTrack(music);
         setIsPlaying(true);

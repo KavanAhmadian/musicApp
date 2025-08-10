@@ -9,20 +9,20 @@ export default function VerifyPage() {
     const [code, setCode] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [timer, setTimer] = useState(120);  // تایمر 120 ثانیه
-    const [canResend, setCanResend] = useState(false);  // برای فعال کردن دکمه ارسال مجدد کد
+    const [timer, setTimer] = useState(120);
+    const [canResend, setCanResend] = useState(false);
     const router = useRouter();
 
-    // تایمر 120 ثانیه
+
     useEffect(() => {
         if (timer > 0) {
             const interval = setInterval(() => {
                 setTimer((prevTime) => prevTime - 1);
             }, 1000);
 
-            return () => clearInterval(interval);  // تمیز کردن تایمر وقتی کامپوننت unmount میشه
+            return () => clearInterval(interval);
         } else {
-            setCanResend(true);  // وقتی تایمر تموم میشه، دکمه ارسال مجدد فعال میشه
+            setCanResend(true);
         }
     }, [timer]);
 
@@ -37,14 +37,14 @@ export default function VerifyPage() {
         setError(null);
 
         try {
-            // استفاده از GET به همراه پارامترها
+
             const queryParams = new URLSearchParams({
                 user_name: user_name,
                 encode: code
             }).toString();
 
             const res = await fetch(`/api/verify?${queryParams}`, {
-                method: 'GET', // تغییر به GET
+                method: 'GET',
             });
 
             const data = await res.json();
@@ -62,13 +62,13 @@ export default function VerifyPage() {
     };
 
     const handleResendCode = async () => {
-        // اینجا کد برای ارسال دوباره باید قرار بگیره
-        setTimer(120); // تایمر رو دوباره از نو شروع می‌کنیم
-        setCanResend(false);  // دکمه ارسال مجدد را غیرفعال می‌کنیم
 
-        // ارسال درخواست برای کد جدید
+        setTimer(120);
+        setCanResend(false);
+
+
         try {
-            const res = await fetch('/api/resend-code', {  // فرضاً این endpoint برای ارسال دوباره کد هست
+            const res = await fetch('/api/resend-code', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ user_name }),

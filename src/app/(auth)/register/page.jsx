@@ -39,9 +39,9 @@ export default function RegisterPage() {
                 refed_by: refedby
             }).toString();
 
-            // تغییر به متد GET
+
             const res = await fetch(`/api/register?${queryParams}`, {
-                method: 'GET',  // تغییر متد به GET
+                method: 'GET',
             });
 
             const data = await res.json();

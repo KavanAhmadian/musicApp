@@ -6,7 +6,7 @@ import { Icon } from "@iconify/react";
 import Image from "next/image";
 import { MdOutlineFileDownload, MdOutlineRemoveRedEye } from "react-icons/md";
 import Link from "next/link";
-import { RiPlayReverseLargeLine } from "react-icons/ri";
+import {RiPlayLargeLine, RiPlayReverseLargeLine} from "react-icons/ri";
 import { LuMusic4 } from "react-icons/lu";
 import { IoFlameOutline } from "react-icons/io5";
 
@@ -46,7 +46,7 @@ function Page(props) {
                 });
                 const data = await response.json();
                 setMusicList(data.all);
-                setListImage(data.thumbnail_url3 || '/image/default.jpg');
+                setListImage(data.cover || '/image/default.jpg');
                 setLoading(false);
             } catch (error) {
                 setError(true);
@@ -228,7 +228,7 @@ function Page(props) {
                             <div className="flex items-center gap-3 mx-4">
                                 <MdOutlineFileDownload className="text-white text-2xl cursor-pointer" />
                                 <Link href={`/singlemusic?video_id=${music.id}`}>
-                                    <RiPlayReverseLargeLine className="text-white text-2xl cursor-pointer" />
+                                    <RiPlayLargeLine className="text-white text-2xl cursor-pointer" />
                                 </Link>
                             </div>
                         </div>

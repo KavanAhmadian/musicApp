@@ -4,14 +4,13 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Icon } from "@iconify/react";
+import { useRouter } from "next/navigation"; // Changed from 'next/router' to 'next/navigation'
 import GenreModal from "@/component/GanreModal";
-  // فرض بر این است که کامپوننت Modal ساخته‌اید
 
 const sidebarLinks = [
     { href: "/", iconn: 'solar:moon-linear', label: "حالت شب غیرفعال شود" },
     { href: "/", iconn: 'solar:refresh-bold', label: "بروزرسانی امتیاز" },
     { href: "/", iconn: 'solar:moon-linear', label: "خرید امتیاز" },
-    { href: "/", iconn: 'solar:login-2-linear', label: "خروج از حساب کاربری" },
     { href: "/", iconn: 'solar:chat-round-dots-outline', label: "نظرات من" },
     { href: "/", iconn: 'solar:headphones-round-sound-outline', label: "پشتیبانی" },
     { href: "/", iconn: 'solar:smartphone-rotate-angle-broken', label: "آپدیت اپلیکیشن" },
@@ -21,9 +20,10 @@ const sidebarLinks = [
 export default function TopNav() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [user, setUser] = useState({ name: '', phone: '', vote: 0 });
-    const [isModalOpen, setIsModalOpen] = useState(false); // State for modal
-    const [genres, setGenres] = useState([]); // State for storing genres
-    const [loading, setLoading] = useState(false); // Loading state for genres
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [genres, setGenres] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const router = useRouter();
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -48,7 +48,7 @@ export default function TopNav() {
                 if (data.error) {
                     console.error(data.error);
                 } else {
-                    setGenres(data.all || []);  // داده‌ها را در state genres ذخیره کنید
+                    setGenres(data.all || []);
                 }
                 setLoading(false);
             })
@@ -56,12 +56,16 @@ export default function TopNav() {
                 console.error("Failed to fetch genres", error);
                 setLoading(false);
             });
-        setIsModalOpen(true); // باز کردن مدال
+        setIsModalOpen(true);
     };
 
-
-    // Open modal and fetch genres
-
+    const handleLogout = () => {
+        if (typeof window !== 'undefined') {
+            localStorage.removeItem('userInfo');
+            setUser({ name: '', phone: '', vote: 0 });
+            router.push('/');
+        }
+    };
 
     return (
         <>
@@ -81,9 +85,7 @@ export default function TopNav() {
 
             {/* Sidebar */}
             <div
-                className={`fixed z-[102] top-0 right-0 h-full w-72 bg-[#212121] text-white transform transition-transform duration-300 ${
-                    isSidebarOpen ? "translate-x-0" : "translate-x-full"
-                }`}
+                className={`fixed z-[102] top-0 right-0 h-full w-72 bg-[#212121] text-white transform transition-transform duration-300 ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}`}
             >
                 <div className="flex items-center justify-between p-4 border-b border-[#2e2e2e]">
                     <div className="flex items-center gap-2">
@@ -115,6 +117,10 @@ export default function TopNav() {
                             <span className="text-[14px]">{label}</span>
                         </Link>
                     ))}
+                    <button onClick={handleLogout} className="flex items-center gap-2 pb-2 border-b border-white">
+                        <Icon icon="solar:login-2-linear" className="w-5 h-5" />
+                        <span className="text-[14px]">خروج از حساب کاربری</span>
+                    </button>
                 </div>
             </div>
 

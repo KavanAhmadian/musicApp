@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Icon } from "@iconify/react";
 import {MdOutlineFileDownload, MdOutlineRemoveRedEye} from "react-icons/md";
 import Link from "next/link";
-import {RiPlayReverseLargeLine} from "react-icons/ri";
+import {RiPlayLargeLine, RiPlayReverseLargeLine} from "react-icons/ri";
 import {LuMusic4} from "react-icons/lu";
 import {IoFlameOutline} from "react-icons/io5";
 import Loader from "@/component/Loader";
@@ -197,7 +197,7 @@ export default function SignerPage() {
                             <div className="flex items-center gap-3 mx-4">
                                 <MdOutlineFileDownload className="text-white text-2xl cursor-pointer"/>
                                 <Link href={`/music/${music.id}`}>
-                                    <RiPlayReverseLargeLine className="text-white text-2xl cursor-pointer"/>
+                                    <RiPlayLargeLine className="text-white text-2xl cursor-pointer"/>
                                 </Link>
                             </div>
                         </div>

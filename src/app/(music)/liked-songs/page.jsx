@@ -12,7 +12,7 @@ export default function LikedSongsPage() {
     useEffect(() => {
         const fetchLikedSongs = async () => {
             try {
-                const res = await fetch('/api/liked-songs');  // فرض کنید این API لیست آهنگ‌های لایک شده را می‌دهد.
+                const res = await fetch('/api/liked-songs');
                 const data = await res.json();
                 setLikedSongs(data.songs);
             } catch (err) {

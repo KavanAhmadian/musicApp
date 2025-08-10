@@ -11,7 +11,7 @@ export default function LoginPage() {
     const [error, setError] = useState(null);
     const router = useRouter();
 
-    // LoginPage.js
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -25,21 +25,18 @@ export default function LoginPage() {
                     user_name: phone,
                     pass: pass,
                 }),
-                credentials: 'include' // Important for cookies
+                credentials: 'include'
             });
 
             const result = await res.json();
 
             if (res.ok) {
-                // Store user info in localStorage
                 localStorage.setItem('userInfo', JSON.stringify(result.user));
 
-                // Add a small delay to ensure cookies are set
                 await new Promise(resolve => setTimeout(resolve, 100));
 
-                // Redirect
                 router.push('/my-beatbox');
-                router.refresh(); // Ensure client-side updates
+                router.refresh();
             } else {
                 setError(result?.msg || "ورود ناموفق");
             }

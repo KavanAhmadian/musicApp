@@ -3,11 +3,17 @@
 import React, { useEffect, useState } from 'react';
 import Link from "next/link";
 import { Icon } from "@iconify/react";
+import { useRouter } from 'next/navigation';
 import ProtectedRoute from "@/component/ProtectedRoute";
 
 export default function MyBeatBoxPage() {
     const [user, setUser] = useState({ name: '', phone: '', vote: 0 });
     const [mounted, setMounted] = useState(false);
+    const router = useRouter();
+
+    const handlePurchaseClick = () => {
+        router.push('/purchase-points');
+    };
 
     useEffect(() => {
         setMounted(true);
@@ -40,8 +46,8 @@ export default function MyBeatBoxPage() {
             تعداد امتیاز : {user.vote ?? 0}
           </span>
                     <div className="flex items-center flex-wrap justify-center gap-8 mt-8 w-full">
-                        <button className="py-3 px-3 md:px-5 w-40 sm:w-50 md:w-80 bg-neutral-600 text-white">دریافت امتیاز رایگان</button>
-                        <button className="py-3 px-3 md:px-5 w-40 sm:w-50 md:w-80 bg-neutral-600 text-white">خرید امتیاز</button>
+                        <button className="cursor-pointer py-3 px-3 md:px-5 w-40 sm:w-50 md:w-80 bg-neutral-600 text-white">دریافت امتیاز رایگان</button>
+                        <button   onClick={handlePurchaseClick} className="cursor-pointer py-3 px-3 md:px-5 w-40 sm:w-50 md:w-80 bg-neutral-600 text-white">خرید امتیاز</button>
                     </div>
                 </div>
 
