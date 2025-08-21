@@ -4,8 +4,9 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const video_id = searchParams.get('video_id');
     const list = searchParams.get('list');
+    const btn = searchParams.get('btn');
 
-    console.log('✅ Proxy received:', { video_id, list });
+
 
     if (!video_id || !list) {
         return NextResponse.json(
@@ -14,7 +15,7 @@ export async function GET(request) {
         );
     }
 
-    const externalUrl = `https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=link_play&btn=Now&video_id=${video_id}&list=${list}`;
+    const externalUrl = `https://rubibox.ir/app-plus/api-test-web.php?key=sdifu4530dsf98sf0sdf&action=link_play&btn=${btn}&video_id=${video_id}&list=${list}`;
 
     try {
         const res = await fetch(externalUrl);
@@ -33,7 +34,7 @@ export async function GET(request) {
         }
 
     } catch (err) {
-        console.error("❌ Proxy error:", err);
+
         return NextResponse.json(
             { error: "Failed to fetch from Rubibox" },
             { status: 500 }

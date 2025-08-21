@@ -196,7 +196,7 @@ export default function SignerPage() {
                             </div>
                             <div className="flex items-center gap-3 mx-4">
                                 <MdOutlineFileDownload className="text-white text-2xl cursor-pointer"/>
-                                <Link href={`/music/${music.id}`}>
+                                <Link href={`/singlemusic?video_id=${music.id}`}>
                                     <RiPlayLargeLine className="text-white text-2xl cursor-pointer"/>
                                 </Link>
                             </div>
