@@ -3,17 +3,16 @@
 import React from "react";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
-import { Icon } from "@iconify/react";
-
+import {Icon} from "@iconify/react";
 
 
 function Navigation() {
     const pathname = usePathname();
 
     const links = [{href: "/video", label: "موزیک ویدیو", icon: 'solar:clapperboard-open-play-linear'}, {
-        href: "/playlist", label: "پلی لیست", icon: 'solar:playlist-minimalistic-3-linear',
-    }, {href: "/", label: "ویترین", icon: 'solar:widget-linear'}, {
         href: "/songs", label: "آهنگ ها", icon: 'solar:music-note-slider-linear',
+    }, {href: "/", label: "ویترین", icon: 'solar:widget-linear'}, {
+        href: "/playlist", label: "پلی لیست", icon: 'solar:playlist-minimalistic-3-linear',
     }, {href: "/my-beatbox", label: "بیت باکس من", icon: 'solar:playlist-minimalistic-3-linear'},];
 
     return (<div
