@@ -7,6 +7,10 @@ import { MdOutlineRemoveRedEye } from 'react-icons/md';
 import { RiPlayReverseLargeLine } from 'react-icons/ri';
 import Image from 'next/image';
 import Loader from '@/component/Loader';
+import AddToPlaylistWidget from "@/component/AddToPlaylistWidget";
+import LoginModal from "@/component/LoginModal";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+
 
 /* ---------- helpers ---------- */
 function fmtTime(s) {
@@ -23,9 +27,7 @@ async function safePlay(audio) {
     }
 }
 
-/* =========================
-   Fullscreen Player (Modal) - نمایش‌گر فقط، از audio والد استفاده می‌کند
-   ========================= */
+
 function FullscreenPlayer({
                               open,
                               onClose,
@@ -40,8 +42,56 @@ function FullscreenPlayer({
                               onDownload,
                           }) {
     const [showLyrics, setShowLyrics] = useState(false);
+    const [loginModalOpen, setLoginModalOpen] = useState(false);
+    const [liked, setLiked] = useState(false);
+
+    useEffect(() => {
+        if (!track?.id) return;
+        const likedTracks = JSON.parse(localStorage.getItem("likedTracks") || "[]");
+        if (likedTracks.includes(track.id)) {
+            setLiked(true);
+        } else {
+            setLiked(false);
+        }
+    }, [track?.id]);
+
 
     if (!open || !track) return null;
+
+
+    const handleLike = async () => {
+        if (!track?.id) return;
+
+        const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+        const userName = userInfo.phone;
+
+        if (!userName) {
+            setLoginModalOpen(true);
+            return;
+        }
+
+        try {
+            const res = await fetch("/api/like", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_name: userName, id: track.id }),
+            });
+
+            const data = await res.json();
+            if (Array.isArray(data) && data[0]?.state === "T") {
+                setLiked(true);
+                const likedTracks = JSON.parse(localStorage.getItem("likedTracks") || "[]");
+                if (!likedTracks.includes(track.id)) {
+                    likedTracks.push(track.id);
+                    localStorage.setItem("likedTracks", JSON.stringify(likedTracks));
+                }
+            }
+        } catch (err) {
+            console.error("❌ خطا:", err);
+        }
+    };
+
+
 
     return (
         <div className="fixed inset-0 z-[9998]">
@@ -71,19 +121,36 @@ function FullscreenPlayer({
                     <h1 className="text-2xl font-bold mb-1 text-center">{track.title}</h1>
                     <h3 className="text-gray-400 mb-6 text-center">{track.fard_name}</h3>
                     <div className="flex items-center gap-6 mb-6">
-                        <button className="flex items-center gap-1">
-                            <Icon icon="solar:heart-linear" className="text-2xl text-[#FFEB3B]" />
+                        <button
+                            className="flex items-center gap-1 cursor-pointer"
+                            onClick={handleLike}
+                        >
+                            {liked ?  <Icon icon="solar:heart-bold" className="text-2xl text-[#FFEB3B]" /> :  <Icon icon="solar:heart-linear" className="text-2xl text-[#FFEB3B]" />}
                             <span className="text-sm">پسند</span>
                         </button>
-                        <button className="flex items-center gap-1">
-                            <Icon icon="solar:playlist-add-linear" className="text-2xl text-[#FFEB3B]" />
-                            <span className="text-sm">افزودن به پلی‌لیست</span>
-                        </button>
-                        <button className="flex items-center gap-1">
+
+
+                        <LoginModal
+                            isOpen={loginModalOpen}
+                            onClose={() => setLoginModalOpen(false)}
+                        />
+
+                        <AddToPlaylistWidget
+                            videoId={track?.id}
+                            trigger={
+                                <button className="flex items-center gap-1 cursor-pointer">
+                                    <Icon icon="solar:playlist-minimalistic-3-outline" className="text-2xl text-[#FFEB3B]" />
+                                    <span className="text-sm">افزودن به پلی‌لیست</span>
+                                </button>
+                            }
+                        />
+
+
+                        <button className="flex items-center gap-1 cursor-pointer" >
                             <Icon icon="solar:share-linear" className="text-2xl text-[#FFEB3B]" />
                             <span className="text-sm">اشتراک</span>
                         </button>
-                        <button className="flex items-center gap-1" onClick={onDownload}>
+                        <button className="flex items-center gap-1 cursor-pointer" onClick={onDownload}>
                             <Icon icon="solar:download-minimalistic-bold" className="text-2xl text-[#FFEB3B]" />
                             <span className="text-sm">دانلود</span>
                         </button>
@@ -141,6 +208,8 @@ function FullscreenPlayer({
     );
 }
 
+
+
 /* =========================
    Main Page (PlayListPage)
    ========================= */
@@ -149,11 +218,11 @@ export default function PlayListPage() {
     const [loading, setLoading] = useState(true);
     const [type, setType] = useState('last_music');
 
-    // هیدریشن
+
     const [mounted, setMounted] = useState(false);
     useEffect(() => { setMounted(true); }, []);
 
-    // مینی‌پلیر (مالک واحدِ audio)
+
     const [currentTrack, setCurrentTrack] = useState(null);
     const [audioUrl, setAudioUrl] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -161,10 +230,10 @@ export default function PlayListPage() {
     const [duration, setDuration] = useState(0);
     const audioRef = useRef(null);
 
-    // فول‌اسکرین
+
     const [playerOpen, setPlayerOpen] = useState(false);
 
-    // لیست
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -190,7 +259,7 @@ export default function PlayListPage() {
         fetchData();
     }, [type]);
 
-    // گرفتن URL برای ترک انتخابی (مینی‌پلیر صاحب آبجکت پخش است)
+
     useEffect(() => {
         if (!currentTrack) return;
         (async () => {
@@ -211,7 +280,7 @@ export default function PlayListPage() {
         })();
     }, [currentTrack, type]);
 
-    // رویدادهای audio مشترک
+
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio || !audioUrl) return;
@@ -224,7 +293,7 @@ export default function PlayListPage() {
         const onTime = () => setProgress(audio.currentTime || 0);
         const onLoaded = () => setDuration(audio.duration || 0);
         const onEnded = () => {
-            // رفتن به بعدی وقتی تموم شد
+
             const idx = musicList.findIndex((m) => String(m.id) === String(currentTrack?.id));
             const next = idx > -1 ? musicList[idx + 1] : null;
             if (next) setCurrentTrack(next);
@@ -241,20 +310,20 @@ export default function PlayListPage() {
         };
     }, [audioUrl, musicList, currentTrack]);
 
-    // handlers
+
     const handleTrackClick = (music) => {
         setCurrentTrack(music);
         setIsPlaying(true);
     };
 
-    // باز کردن فول‌اسکرین از آیتم لیست: ترک عوض می‌شه (طبیعی)
+
     const openFullscreenFor = (music) => {
         setCurrentTrack(music);
         setIsPlaying(true);
         setPlayerOpen(true);
     };
 
-    // باز کردن فول‌اسکرین از مینی‌پلیر: هیچ چیز عوض نمی‌شه => ادامه می‌دهد
+
     const openFullscreenFromMini = () => setPlayerOpen(true);
 
     const handleNextTrack = () => {
@@ -366,7 +435,7 @@ export default function PlayListPage() {
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3 mx-4">
-                                        {/* دانلود همان آیتم (بدون تغییر ترک جاری) */}
+
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
@@ -378,7 +447,7 @@ export default function PlayListPage() {
                                             <Icon icon="solar:download-minimalistic-bold" className="text-white text-2xl" />
                                         </button>
 
-                                        {/* پخش فول‌اسکرین با شروع از ابتدا */}
+
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
@@ -395,7 +464,7 @@ export default function PlayListPage() {
                         )}
                     </div>
 
-                    {/* Bottom Player (mini) — بدون دانلود؛ با دکمه‌ی فول‌اسکرین */}
+
                     {currentTrack && audioUrl && (
                         <div className="fixed bottom-[78px] z-[9910] duration-150 transition-all lg:bottom-0 left-0 right-0 bg-gradient-to-r to-[#4e4e4e] from-[#323230] bg-[#1a1a1a] text-white px-4 py-2 flex flex-col items-center shadow-lg border-t border-gray-800">
                             <div className="w-full flex justify-between items-center">
@@ -407,7 +476,7 @@ export default function PlayListPage() {
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    {/* دکمه‌ی فول‌اسکرین: فقط مدال را باز می‌کند؛ پخش ادامه دارد */}
+
                                     <button onClick={openFullscreenFromMini} title="تمام‌صفحه" className="rounded-full p-2 hover:bg-white/10">
                                         <Icon icon="solar:maximize-square-linear" className="text-[#e0e0e0]" style={{ width: 24, height: 24 }} />
                                     </button>
@@ -452,12 +521,12 @@ export default function PlayListPage() {
                                     className="w-full accent-[#FF9766]"
                                 />
                             </div>
-                            {/* audio مشترک برای هر دو حالت */}
+
                             <audio ref={audioRef} src={audioUrl || undefined} className="hidden" />
                         </div>
                     )}
 
-                    {/* Fullscreen modal: فقط UI؛ از همان audio والد استفاده می‌کند */}
+
                     <FullscreenPlayer
                         open={playerOpen}
                         onClose={() => setPlayerOpen(false)}

@@ -5,9 +5,10 @@ import Image from 'next/image';
 import { Icon } from '@iconify/react';
 import { MdOutlineFileDownload } from 'react-icons/md';
 import Link from 'next/link';
+import LoginModal from "@/component/LoginModal";
 
 export default function SignerPage() {
-    // ====== States (ترتیب ثابت نگه داشته شود) ======
+
     const [songs, setSongs] = useState([]);
     const [albums, setAlbums] = useState([]);
     const [albumSongs, setAlbumSongs] = useState([]);
@@ -19,8 +20,8 @@ export default function SignerPage() {
 
     const [error, setError] = useState(null);
 
-    const [view, setView] = useState('songs'); // 'songs' | 'albums'
-    const [type, setType] = useState('last_music'); // برای /api/play
+    const [view, setView] = useState('songs');
+    const [type, setType] = useState('last_music');
     const [currentTrack, setCurrentTrack] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [audioUrl, setAudioUrl] = useState(null);
@@ -35,7 +36,53 @@ export default function SignerPage() {
     const router = useRouter();
     const signerId = searchParams.get('id');
 
-    // ====== Fetch: لیست آهنگ‌های اخیر خواننده ======
+    const [loginModalOpen, setLoginModalOpen] = useState(false);
+    const [liked, setLiked] = useState(false);
+
+    useEffect(() => {
+        if (!currentTrack?.id) return;
+        const likedTracks = JSON.parse(localStorage.getItem("likedTracks") || "[]");
+        if (likedTracks.includes(currentTrack.id)) {
+            setLiked(true);
+        } else {
+            setLiked(false);
+        }
+    }, [currentTrack?.id]);
+
+    const handleLike = async () => {
+        if (!currentTrack?.id) return;
+
+        const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+        const userName = userInfo.phone;
+
+        if (!userName) {
+            setLoginModalOpen(true);
+            return;
+        }
+
+        try {
+            const res = await fetch("/api/like", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_name: userName, id: currentTrack.id }),
+            });
+
+            const data = await res.json();
+            if (Array.isArray(data) && data[0]?.state === "T") {
+                setLiked(true);
+                const likedTracks = JSON.parse(localStorage.getItem("likedTracks") || "[]");
+                if (!likedTracks.includes(currentTrack.id)) {
+                    likedTracks.push(currentTrack.id);
+                    localStorage.setItem("likedTracks", JSON.stringify(likedTracks));
+                }
+            }
+        } catch (err) {
+            console.error("❌ خطا:", err);
+        }
+    };
+
+
+
     useEffect(() => {
         const fetchSongs = async () => {
             setLoading(true);
@@ -64,7 +111,7 @@ export default function SignerPage() {
         if (signerId) fetchSongs();
     }, [signerId]);
 
-    // ====== Fetch: لیست آلبوم‌های خواننده ======
+
     const fetchAlbums = async () => {
         setAlbumsLoading(true);
         setError(null);
@@ -72,7 +119,7 @@ export default function SignerPage() {
             const res = await fetch(`/api/album?father=${encodeURIComponent(signerId)}`, { cache: 'no-store' });
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
-            setAlbums(data.all || []); // 'all' رو از سرور برمی‌گردونیم
+            setAlbums(data.all || []);
         } catch (e) {
             setError('خطا در دریافت آلبوم‌ها');
         } finally {
@@ -80,7 +127,7 @@ export default function SignerPage() {
         }
     };
 
-    // ====== Fetch: آهنگ‌های یک آلبوم ======
+
     const fetchAlbumSongs = async (album) => {
         setAlbumSongsLoading(true);
         setError(null);
@@ -91,7 +138,7 @@ export default function SignerPage() {
                 body: JSON.stringify({
                     key: 'sdifu4530dsf98sf0sdf',
                     action: 'list_music',
-                    playlist_id: album.id, // اگر پارامتر متفاوت است، با بک‌اند هماهنگ کن
+                    playlist_id: album.id,
                     what_list: 'album_music',
                     pageno: '1'
                 })
@@ -106,7 +153,7 @@ export default function SignerPage() {
         }
     };
 
-    // ====== گرفتن لینک پخش برای ترک انتخابی ======
+
     useEffect(() => {
         const run = async () => {
             if (!currentTrack) return;
@@ -130,7 +177,7 @@ export default function SignerPage() {
         run();
     }, [currentTrack, type]);
 
-    // ====== کنترل‌های پلیر ======
+
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
@@ -155,7 +202,7 @@ export default function SignerPage() {
         };
     }, [audioUrl]);
 
-    // ====== هندلرها ======
+
     const handleTrackClick = (track, source = 'songs') => {
         setType(source === 'albums' ? 'Album' : 'last_music');
         setCurrentTrack(track);
@@ -204,12 +251,11 @@ export default function SignerPage() {
 
     const handleDownloadTrack = async (track, source = 'songs') => {
         try {
-            // اگر ترک جاری است و لینک داریم، مستقیم دانلود
+
             if (currentTrack?.id === track.id && audioUrl) {
                 handleDownloadCurrent();
                 return;
             }
-            // در غیر این صورت یک بار لینک را می‌گیریم و دانلود می‌کنیم (بدون عوض‌کردن currentTrack)
             const listParam = source === 'albums' ? 'Album' : 'last_music';
             const res = await fetch(`/api/play?video_id=${track.id}&list=${listParam}`);
             const ctype = res.headers.get('content-type');
@@ -306,7 +352,7 @@ export default function SignerPage() {
                                     </button>
 
                                     <div className="flex items-center gap-3 mx-4">
-                                        {/* دانلود مستقیم آن آیتم */}
+
                                         <button
                                             onClick={() => handleDownloadTrack(music, 'songs')}
                                             title="دانلود"
@@ -314,7 +360,7 @@ export default function SignerPage() {
                                             <MdOutlineFileDownload className="text-white text-2xl" />
                                         </button>
 
-                                        {/* پخش در فول‌اسکرین */}
+
                                         <button
                                             onClick={() => playInFullscreen(music, 'songs')}
                                             title="پخش تمام‌صفحه"
@@ -337,7 +383,7 @@ export default function SignerPage() {
             {/* Albums View */}
             {view === 'albums' && (
                 <div className="flex flex-col gap-5">
-                    {/* لیست آلبوم‌ها */}
+
                     {albumsLoading ? (
                         <div className="text-center text-white py-10">در حال بارگذاری آلبوم‌ها...</div>
                     ) : !albums.length ? (
@@ -371,7 +417,7 @@ export default function SignerPage() {
                         </div>
                     )}
 
-                    {/* آهنگ‌های آلبوم انتخاب‌شده */}
+
                     {selectedAlbum && (
                         <div className="mt-2">
                             <div className="flex items-center justify-between mb-3">
@@ -566,10 +612,19 @@ export default function SignerPage() {
                         <h3 className="text-gray-400 mb-6 text-center">{currentTrack.fard_name}</h3>
 
                         <div className="flex items-center gap-6 mb-6">
-                            <button className="flex items-center gap-1">
-                                <Icon icon="solar:heart-linear" className="text-2xl text-[#FFEB3B]" />
+                            <button
+                                className="flex items-center gap-1 cursor-pointer"
+                                onClick={handleLike}
+                            >
+                                {liked ?  <Icon icon="solar:heart-bold" className="text-2xl text-[#FFEB3B]" /> :  <Icon icon="solar:heart-linear" className="text-2xl text-[#FFEB3B]" />}
                                 <span className="text-sm">پسند</span>
                             </button>
+
+                            {/* مدال ورود */}
+                            <LoginModal
+                                isOpen={loginModalOpen}
+                                onClose={() => setLoginModalOpen(false)}
+                            />
                             <button className="flex items-center gap-1">
                                 <Icon icon="solar:playlist-add-linear" className="text-2xl text-[#FFEB3B]" />
                                 <span className="text-sm">افزودن به پلی‌لیست</span>

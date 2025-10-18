@@ -23,8 +23,10 @@ export async function POST(req) {
             const userInfo = {
                 name: user.name,
                 phone: user.user_name,
-                vote: user.voite
+                voite: user.voite
             };
+
+
 
             const cookieStore = cookies();
             cookieStore.set('session_token', user.token, {

@@ -9,7 +9,7 @@ import Loader from "@/component/Loader";
 
 const API_URL = '/api/playlists';
 
-// Reusable slider component
+
 const UserSlider = ({ title, users ,   fatherID }) => {
     if (!users || users.length === 0) return null;
 
@@ -83,7 +83,7 @@ function SongsPage() {
                 setLoading(false);
 
             } catch (error) {
-                // console.error('Error fetching data', error);
+
                 setError(true);
                 setLoading(false);
             }

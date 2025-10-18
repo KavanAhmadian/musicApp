@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { MdOutlineFileDownload } from "react-icons/md";
 import { RiPlayLargeLine } from "react-icons/ri";
+import LoginModal from "@/component/LoginModal";
 
 function Page(props) {
     // ==== State ====
@@ -29,6 +30,19 @@ function Page(props) {
     // Fullscreen player modal states
     const [showFullPlayer, setShowFullPlayer] = useState(false);
     const [showLyricsFS, setShowLyricsFS] = useState(false);
+
+    const [loginModalOpen, setLoginModalOpen] = useState(false);
+    const [liked, setLiked] = useState(false);
+
+    useEffect(() => {
+        if (!currentTrack?.id) return;
+        const likedTracks = JSON.parse(localStorage.getItem("likedTracks") || "[]");
+        if (likedTracks.includes(currentTrack.id)) {
+            setLiked(true);
+        } else {
+            setLiked(false);
+        }
+    }, [currentTrack?.id]);
 
     // ==== Fetch list data ====
     useEffect(() => {
@@ -189,6 +203,39 @@ function Page(props) {
     };
 
 
+    const handleLike = async () => {
+        if (!currentTrack?.id) return;
+
+        const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+        const userName = userInfo.phone;
+
+        if (!userName) {
+            setLoginModalOpen(true);
+            return;
+        }
+
+        try {
+            const res = await fetch("/api/like", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_name: userName, id: currentTrack.id }),
+            });
+
+            const data = await res.json();
+            if (Array.isArray(data) && data[0]?.state === "T") {
+                setLiked(true);
+                const likedTracks = JSON.parse(localStorage.getItem("likedTracks") || "[]");
+                if (!likedTracks.includes(currentTrack.id)) {
+                    likedTracks.push(currentTrack.id);
+                    localStorage.setItem("likedTracks", JSON.stringify(likedTracks));
+                }
+            }
+        } catch (err) {
+            console.error("❌ خطا:", err);
+        }
+    };
+
+
     return (
         <div>
             {/* Cover of list */}
@@ -274,7 +321,7 @@ function Page(props) {
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        playInFullscreen(music); // ← ترک را ست کن + فول‌اسکرین + پخش
+                                        playInFullscreen(music);
                                     }}
                                 >
                                     <RiPlayLargeLine className="text-white text-2xl cursor-pointer" />
@@ -411,10 +458,19 @@ function Page(props) {
                         <h3 className="text-gray-400 mb-6 text-center">{currentTrack.fard_name}</h3>
 
                         <div className="flex items-center gap-6 mb-6">
-                            <button className="flex items-center gap-1">
-                                <Icon icon="solar:heart-linear" className="text-2xl text-[#FFEB3B]" />
+                            <button
+                                className="flex items-center gap-1 cursor-pointer"
+                                onClick={handleLike}
+                            >
+                                {liked ?  <Icon icon="solar:heart-bold" className="text-2xl text-[#FFEB3B]" /> :  <Icon icon="solar:heart-linear" className="text-2xl text-[#FFEB3B]" />}
                                 <span className="text-sm">پسند</span>
                             </button>
+
+
+                            <LoginModal
+                                isOpen={loginModalOpen}
+                                onClose={() => setLoginModalOpen(false)}
+                            />
                             <button className="flex items-center gap-1">
                                 <Icon icon="solar:playlist-add-linear" className="text-2xl text-[#FFEB3B]" />
                                 <span className="text-sm">افزودن به پلی‌لیست</span>
